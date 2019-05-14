@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <AWSProjectType>Lambda</AWSProjectType>
+    <ApplicationIcon />
+    <OutputType>Library</OutputType>
+    <StartupObject />
+    <RootNamespace>Dvelop.Lambda.EntryPoint</RootNamespace>
+    <AssemblyName>EntryPoint</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+	<PackageReference Include="Amazon.Lambda.AspNetCoreServer" Version="2.1.0" />
+	<PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.5" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Domain\Domain.csproj" />
+    <ProjectReference Include="..\..\Plugins\DynamoDbFake\DynamoDbFake.csproj" />
+    <ProjectReference Include="..\..\Plugins\WebApi\WebApi.csproj" />
+    <ProjectReference Include="..\..\Remote\Remote.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+</Project>
