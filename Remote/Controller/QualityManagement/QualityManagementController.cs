@@ -50,8 +50,10 @@ namespace Dvelop.Remote.Controller.QualityManagement
             */
 
             HttpClient httpClient = new HttpClient();
-            // In der DOku steht wie man an die ID kommt // https://developer.d-velop.de/documentation/dmsap/de/dms-api-126976273.html
-            var url = _tenant.SystemBaseUri.OriginalString + "/dms/r/a0a074f8-5dbf-4af6-9896-fb499047496e/srm/?sourceid=%2fdevperts-qmhandbuch%2fsources%2fmysource&sourcecategories=" + HttpUtility.UrlEncode("[\"qm-documents\"]") + "&sourceproperties=" + HttpUtility.UrlEncode($"{{\"parent\":[\"0\"]}}");
+            // In der Doku steht wie man an die ID kommt 
+            // https://developer.d-velop.de/documentation/dmsap/de/dms-api-126976273.html
+            var searchTopLevelURL = "/dms/r/a0a074f8-5dbf-4af6-9896-fb499047496e/srm/?sourceid=%2fdevperts-qmhandbuch%2fsources%2fmysource&sourcecategories=" + HttpUtility.UrlEncode("[\"qm-documents\"]") + "&sourceproperties=" + HttpUtility.UrlEncode($"{{\"parent\":[\"0\"]}}");
+            var url = _tenant.SystemBaseUri.OriginalString + searchTopLevelURL;
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _user.CurrentUser.DvBearer);
@@ -82,8 +84,10 @@ namespace Dvelop.Remote.Controller.QualityManagement
             */
 
             HttpClient httpClient = new HttpClient();
-            // In der DOku steht wie man an die ID kommt // https://developer.d-velop.de/documentation/dmsap/de/dms-api-126976273.html
-            var url = _tenant.SystemBaseUri.OriginalString + "/dms/r/a0a074f8-5dbf-4af6-9896-fb499047496e/srm/?sourceid=%2fdevperts-qmhandbuch%2fsources%2fmysource&sourcecategories=" + HttpUtility.UrlEncode("[\"qm-documents\"]") + "&sourceproperties=" + HttpUtility.UrlEncode($"{{\"parent\":[\"{parentId}\"]}}");
+            // In der Doku steht wie man an die ID kommt 
+            // https://developer.d-velop.de/documentation/dmsap/de/dms-api-126976273.html
+            var searchParentDocsURL = "/dms/r/a0a074f8-5dbf-4af6-9896-fb499047496e/srm/?sourceid=%2fdevperts-qmhandbuch%2fsources%2fmysource&sourcecategories=" + HttpUtility.UrlEncode("[\"qm-documents\"]") + "&sourceproperties=" + HttpUtility.UrlEncode($"{{\"parent\":[\"{parentId}\"]}}");
+            var url = _tenant.SystemBaseUri.OriginalString + searchParentDocsURL;
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _user.CurrentUser.DvBearer);
