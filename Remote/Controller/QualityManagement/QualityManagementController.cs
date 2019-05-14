@@ -37,10 +37,10 @@ namespace Dvelop.Remote.Controller.QualityManagement
         [HttpGet("dmssources", Name = nameof(QualityManagementController) + "." + nameof(GetDmsSources))]
         public object GetDmsSources()
         {
-            return Content("{	\"sources\" : [{		\"id\" : \"/devperts-qmhandbuch/sources/mysource\",		\"displayName\" : \"QM-Handbuch\",		\"categories\": [{			\"key\": \"qm-documents\", 			\"displayName\": \"QM Dokumente\"		}],		\"properties\" : [{			\"key\" : \"chapter\",			\"displayName\" : \"Kapitelnummer\"		},{			\"key\" : \"headline\",			\"displayName\" : \"Überschrift\"		}]	}]}", "application/json");
+            return Content("{	\"sources\" : [{		\"id\" : \"/devperts-qmhandbuch/sources/mysource\",		\"displayName\" : \"QM-Handbuch\",		\"categories\": [{			\"key\": \"qm-documents\", 			\"displayName\": \"QM Dokumente\"		}],		\"properties\" : [{			\"key\" : \"chapter\",			\"displayName\" : \"Kapitelnummer\"		},{			\"key\" : \"headline\",			\"displayName\" : \"Überschrift\"		},{			\"key\" : \"parent\",			\"displayName\" : \"Parent Chapter\"		}]	}]}", "application/json");
         }
 
-        [HttpGet("toplevel", Name = nameof(QualityManagementController) + "." + nameof(GetTopLevelElements))]
+        [HttpGet("chapter", Name = nameof(QualityManagementController) + "." + nameof(GetTopLevelElements))]
         public async Task<object> GetTopLevelElements()
         {
             ViewData["Title"] = "QM-Dokumente";
@@ -51,7 +51,7 @@ namespace Dvelop.Remote.Controller.QualityManagement
 
             HttpClient httpClient = new HttpClient();
             // In der DOku steht wie man an die ID kommt // https://developer.d-velop.de/documentation/dmsap/de/dms-api-126976273.html
-            var url = _tenant.SystemBaseUri.OriginalString + "/dms/r/a0a074f8-5dbf-4af6-9896-fb499047496e/srm/?sourceid=%2fdevperts-qmhandbuch%2fsources%2fmysource&sourcecategories=" + HttpUtility.UrlEncode("[\"qm-documents\"]");
+            var url = _tenant.SystemBaseUri.OriginalString + "/dms/r/a0a074f8-5dbf-4af6-9896-fb499047496e/srm/?sourceid=%2fdevperts-qmhandbuch%2fsources%2fmysource&sourcecategories=" + HttpUtility.UrlEncode("[\"qm-documents\"]") + "&sourceproperties=" + HttpUtility.UrlEncode($"{{\"parent\":[\"0\"]}}");
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _user.CurrentUser.DvBearer);
@@ -63,26 +63,60 @@ namespace Dvelop.Remote.Controller.QualityManagement
             var result = ret2.items.Select(x => new ChapterResultDto()
             {
                 ChapterNo = x.sourceProperties.Single(y => y.key == "chapter").value,
-                Headline = x.sourceProperties.Single(y => y.key == "headline").value
+                Headline = x.sourceProperties.Single(y => y.key == "headline").value,
+                DocumentLink = x._links["self"].Href
             }).ToList();
 
             return View("QualityDocuments", result);
             //return Content(_user.CurrentUser.DvBearer);
             return result;
         }
+
+        [HttpGet("chapter/{parentId}", Name = nameof(QualityManagementController) + "." + nameof(GetSubElements))]
+        public async Task<object> GetSubElements(string parentId)
+        {
+            ViewData["Title"] = "QM-Dokumente";
+            /*
+            ViewData["Js"] = "vacationrequestlist.js";
+            ViewData["Css"] = "vacationrequestlist.css";
+            */
+
+            HttpClient httpClient = new HttpClient();
+            // In der DOku steht wie man an die ID kommt // https://developer.d-velop.de/documentation/dmsap/de/dms-api-126976273.html
+            var url = _tenant.SystemBaseUri.OriginalString + "/dms/r/a0a074f8-5dbf-4af6-9896-fb499047496e/srm/?sourceid=%2fdevperts-qmhandbuch%2fsources%2fmysource&sourcecategories=" + HttpUtility.UrlEncode("[\"qm-documents\"]") + "&sourceproperties=" + HttpUtility.UrlEncode($"{{\"parent\":[\"{parentId}\"]}}");
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _user.CurrentUser.DvBearer);
+
+            var resonse = await httpClient.SendAsync(request);
+
+            var ret2 = await resonse.Content.ReadAsAsync<SearchReturnDto>();
+
+            var result = ret2.items.Select(x => new ChapterResultDto()
+            {
+                ChapterNo = x.sourceProperties.Single(y => y.key == "chapter").value,
+                Headline = x.sourceProperties.Single(y => y.key == "headline").value,
+                DocumentLink = x._links["self"].Href
+            }).ToList();
+
+            return View("SubQualityDocuments", result);
+            //return Content(_user.CurrentUser.DvBearer);
+            return result;
+        }
     }
 
-    public class ChapterResultDto
+    public class ChapterResultDto 
     {
         public string ChapterNo { get; set; }
         public string Headline { get; set; }
+        public string DocumentLink { get; set; }
     }
 
     public class SearchReturnDto
     {
         public List<SearchResultItemDto> items { get; set; }
     }
-    public class SearchResultItemDto
+    public class SearchResultItemDto : HalJsonDto
     {
         public string id { get; set; }
         public List<SearchResultItemSourceProperty> sourceProperties { get; set; }
