@@ -11,6 +11,9 @@
 	 </ItemGroup>
 	
 	 <ItemGroup>
+		<Content Update="Views\QualityManagement\SubQualityDocuments.cshtml">
+		  <Pack>$(IncludeRazorContentInPack)</Pack>
+		</Content>
 		<Content Update="Views\QualityManagement\QualityDocuments.cshtml">
 		  <Pack>$(IncludeRazorContentInPack)</Pack>
 		</Content>

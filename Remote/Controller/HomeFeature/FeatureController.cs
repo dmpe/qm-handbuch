@@ -1,4 +1,5 @@
 ﻿using Dvelop.Remote.Controller.HomeFeature.Dto;
+using Dvelop.Remote.Controller.QualityManagement;
 using Dvelop.Remote.Controller.VacationRequest;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,7 +41,7 @@ namespace Dvelop.Remote.Controller.HomeFeature
                 Title = "QM-Handbuch",
                 SubTitle = "Super!!!",
                 Summary = "Noch besser!",
-                Url = Url.RouteUrl(nameof(VacationRequestController) + "." +nameof(VacationRequestController.GetVacationListView)),
+                Url = Url.RouteUrl(nameof(QualityManagementController) + "." +nameof(QualityManagementController.GetTopLevelElements)),
                 Color = "pumpkin",
                 Icon = "dv-tags",
                 Description = "Learn to be the best!"
