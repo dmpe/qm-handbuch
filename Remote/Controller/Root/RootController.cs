@@ -4,7 +4,7 @@ using Dvelop.Remote.Controller.ConfigFeature;
 using Dvelop.Remote.Controller.HomeFeature;
 using Dvelop.Remote.Controller.Root.Dto;
 using Dvelop.Remote.Controller.Root.ViewModel;
-using Dvelop.Remote.Controller.VacationRequest;
+using Dvelop.Remote.Controller.QualityManagement;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -41,9 +41,8 @@ namespace Dvelop.Remote.Controller.Root
                 Qualifier = version.Qualifier
             };
 
-            
             // Adding Features (HAL-LinkRelations)
-            versionDto._links.Add(VacationRequestController.ValuesRelation,new RelationDataDto(Url.RouteUrl($"{nameof(VacationRequestController)}.{nameof(VacationRequestController.GetVacationList)}")));
+            versionDto._links.Add("sources", new RelationDataDto(Url.RouteUrl($"{nameof(QualityManagementController)}.{nameof(QualityManagementController.GetDmsSources)}")));
             // Add Features to the ConfigApp (not available yet)
             versionDto._links.Add(ConfigFeaturesController.ConfigFeatures, new RelationDataDto(Url.RouteUrl(nameof(ConfigFeaturesController)+"."+nameof(ConfigFeaturesController.GetConfigFeatures), null)));
             versionDto._links.Add(HomeFeatureController.FeaturesDescription, new RelationDataDto(Url.RouteUrl(nameof(HomeFeatureController)+"."+nameof(HomeFeatureController.GetFeaturesDescriptions))));

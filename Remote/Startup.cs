@@ -41,7 +41,7 @@ namespace Dvelop.Remote
             Configuration["DEFAULT_SYSTEM_BASE_URI"] = Configuration["SYSTEMBASEURI"]??"http://localhost";
             Configuration["SIGNATURE_SECRET"] = Configuration["SIGNATURE_SECRET"]??"";
 
-            Configuration["APP_NAME"] = Configuration["APP_NAME"]??"acme-apptemplatecs";
+            Configuration["APP_NAME"] = Configuration["APP_NAME"]??"devperts-qmhandbuch";
             Configuration["BASE"] = $"/{Configuration["APP_NAME"]}";
             Configuration["ASSETS"] = Configuration["ASSET_BASE_PATH"]??$"{Configuration["DEFAULT_SYSTEM_BASE_URI"]}{Configuration["BASE"]}";
             

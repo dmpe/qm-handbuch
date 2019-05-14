@@ -2,7 +2,7 @@
 
 setlocal enableextensions enabledelayedexpansion
 
-set APPNAME=acme-apptemplatecs
+set APPNAME=devperts-qmhandbuch
 set BUILDCONTAINER=registry.invalid/%APPNAME%_build
 
 set "denv="
