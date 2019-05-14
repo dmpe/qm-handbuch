@@ -1,0 +1,21 @@
+﻿@model List<Dvelop.Remote.Controller.QualityManagement.ChapterResultDto>
+@{
+    Layout = "_Layout";
+}
+<div class="mdc-top-app-bar--fixed-adjust">
+    <ul class="mdc-list mdc-list--two-line" aria-orientation="vertical">
+        @foreach (var item in Model)
+        {
+        <li class="dmc-list-item">
+            <a href="#" class="mdc-list-item" tabindex="0">
+                <span class="mdc-list-item__graphic material-icons state-icon" aria-hidden="true"></span>
+                <span class="mdc-list-item__text">
+                    <span class="mdc-list-item__primary-text">@item.ChapterNo</span>
+                    <span class="mdc-list-item__secondary-text">@item.Headline</span>
+                </span>
+            </a>
+        </li>
+        <li role="separator" class="mdc-list-divider mdc-list-divider--padded"></li>
+        }
+    </ul>
+</div>
