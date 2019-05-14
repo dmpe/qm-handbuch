@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APPNAME=acme-apptemplatecs
+APPNAME=devperts-qmhandbuch
 BUILDCONTAINER=registry.invalid/${APPNAME}_build
 
 DENV=
