@@ -37,6 +37,36 @@ namespace Dvelop.Remote.Controller.QualityManagement
         [HttpGet("dmssources", Name = nameof(QualityManagementController) + "." + nameof(GetDmsSources))]
         public object GetDmsSources()
         {
+
+            Category cat = new Category();
+            cat.key = "qm-documents";
+            cat.displayName = "QM Documents";
+
+            List<Category> ls_cat = new List<Category>();
+            ls_cat.Add(cat);
+
+            List<Property> ls_prop = new List<Property>();
+            ls_prop.AddRange(new List<Property>
+            {
+                new Property("chapter", "Chapter Number" ),
+                new Property("headline", "Headline" ),
+                new Property("parent", "Parent Chapter" ),
+            });
+
+            List<Source> listOfSources = new List<Source>();
+            Source sourceDetail = new Source();
+            sourceDetail.id = "/devperts-qmhandbuch/sources/mysource";
+            sourceDetail.displayName = "QM-Handbuch";
+            sourceDetail.categories = ls_cat;
+            sourceDetail.properties = ls_prop;
+            listOfSources.Add(sourceDetail);
+
+            SourcesList listOfListOfSources = new SourcesList();
+            listOfListOfSources.sources = listOfSources;
+            string requestDMSApp = JsonConvert.SerializeObject(listOfListOfSources);
+            Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(listOfListOfSources, Formatting.Indented));
+            return Content(requestDMSApp);
+
             return Content("{	\"sources\" : [{		\"id\" : \"/devperts-qmhandbuch/sources/mysource\",		\"displayName\" : \"QM-Handbuch\",		\"categories\": [{			\"key\": \"qm-documents\", 			\"displayName\": \"QM Dokumente\"		}],		\"properties\" : [{			\"key\" : \"chapter\",			\"displayName\" : \"Kapitelnummer\"		},{			\"key\" : \"headline\",			\"displayName\" : \"Überschrift\"		},{			\"key\" : \"parent\",			\"displayName\" : \"Parent Chapter\"		}]	}]}", "application/json");
         }
 
@@ -50,8 +80,10 @@ namespace Dvelop.Remote.Controller.QualityManagement
             */
 
             HttpClient httpClient = new HttpClient();
-            // In der DOku steht wie man an die ID kommt // https://developer.d-velop.de/documentation/dmsap/de/dms-api-126976273.html
-            var url = _tenant.SystemBaseUri.OriginalString + "/dms/r/a0a074f8-5dbf-4af6-9896-fb499047496e/srm/?sourceid=%2fdevperts-qmhandbuch%2fsources%2fmysource&sourcecategories=" + HttpUtility.UrlEncode("[\"qm-documents\"]") + "&sourceproperties=" + HttpUtility.UrlEncode($"{{\"parent\":[\"0\"]}}");
+            // In der Doku steht wie man an die ID kommt 
+            // https://developer.d-velop.de/documentation/dmsap/de/dms-api-126976273.html
+            var searchTopLevelURL = "/dms/r/a0a074f8-5dbf-4af6-9896-fb499047496e/srm/?sourceid=%2fdevperts-qmhandbuch%2fsources%2fmysource&sourcecategories=" + HttpUtility.UrlEncode("[\"qm-documents\"]") + "&sourceproperties=" + HttpUtility.UrlEncode($"{{\"parent\":[\"0\"]}}");
+            var url = _tenant.SystemBaseUri.OriginalString + searchTopLevelURL;
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _user.CurrentUser.DvBearer);
@@ -82,8 +114,10 @@ namespace Dvelop.Remote.Controller.QualityManagement
             */
 
             HttpClient httpClient = new HttpClient();
-            // In der DOku steht wie man an die ID kommt // https://developer.d-velop.de/documentation/dmsap/de/dms-api-126976273.html
-            var url = _tenant.SystemBaseUri.OriginalString + "/dms/r/a0a074f8-5dbf-4af6-9896-fb499047496e/srm/?sourceid=%2fdevperts-qmhandbuch%2fsources%2fmysource&sourcecategories=" + HttpUtility.UrlEncode("[\"qm-documents\"]") + "&sourceproperties=" + HttpUtility.UrlEncode($"{{\"parent\":[\"{parentId}\"]}}");
+            // In der Doku steht wie man an die ID kommt 
+            // https://developer.d-velop.de/documentation/dmsap/de/dms-api-126976273.html
+            var searchParentDocsURL = "/dms/r/a0a074f8-5dbf-4af6-9896-fb499047496e/srm/?sourceid=%2fdevperts-qmhandbuch%2fsources%2fmysource&sourcecategories=" + HttpUtility.UrlEncode("[\"qm-documents\"]") + "&sourceproperties=" + HttpUtility.UrlEncode($"{{\"parent\":[\"{parentId}\"]}}");
+            var url = _tenant.SystemBaseUri.OriginalString + searchParentDocsURL;
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _user.CurrentUser.DvBearer);
