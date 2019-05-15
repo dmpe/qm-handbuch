@@ -13,6 +13,7 @@ using Dvelop.Remote.Controller.VacationRequest.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Dvelop.Remote.Controller.QualityManagement.Dto;
 
 namespace Dvelop.Remote.Controller.QualityManagement
 {
@@ -37,37 +38,36 @@ namespace Dvelop.Remote.Controller.QualityManagement
         [HttpGet("dmssources", Name = nameof(QualityManagementController) + "." + nameof(GetDmsSources))]
         public object GetDmsSources()
         {
-
-            Category cat = new Category();
-            cat.key = "qm-documents";
-            cat.displayName = "QM Documents";
-
-            List<Category> ls_cat = new List<Category>();
-            ls_cat.Add(cat);
-
-            List<Property> ls_prop = new List<Property>();
-            ls_prop.AddRange(new List<Property>
+            SourcesList listOfListOfSources = new SourcesList()
             {
-                new Property("chapter", "Chapter Number" ),
-                new Property("headline", "Headline" ),
-                new Property("parent", "Parent Chapter" ),
-            });
+                sources = new List<Source>()
+                {
+                    new Source()
+                    {
+                        id = "/devperts-qmhandbuch/sources/mysource",
+                        displayName = "QM-Handbuch",
+                        categories = new List<Category>()
+                        {
+                            new Category()
+                            {
+                                key = "qm-documents",
+                                displayName = "QM Documents"
+                            }
+                        },
+                        properties = new List<Property>()
+                        {
+                            new Property("chapter", "Chapter Number" ),
+                            new Property("headline", "Headline" ),
+                            new Property("parent", "Parent Chapter" )
+                        }
+                    }
+                }
+            };
 
-            List<Source> listOfSources = new List<Source>();
-            Source sourceDetail = new Source();
-            sourceDetail.id = "/devperts-qmhandbuch/sources/mysource";
-            sourceDetail.displayName = "QM-Handbuch";
-            sourceDetail.categories = ls_cat;
-            sourceDetail.properties = ls_prop;
-            listOfSources.Add(sourceDetail);
-
-            SourcesList listOfListOfSources = new SourcesList();
-            listOfListOfSources.sources = listOfSources;
             string requestDMSApp = JsonConvert.SerializeObject(listOfListOfSources);
             Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(listOfListOfSources, Formatting.Indented));
             return Content(requestDMSApp);
-
-            return Content("{	\"sources\" : [{		\"id\" : \"/devperts-qmhandbuch/sources/mysource\",		\"displayName\" : \"QM-Handbuch\",		\"categories\": [{			\"key\": \"qm-documents\", 			\"displayName\": \"QM Dokumente\"		}],		\"properties\" : [{			\"key\" : \"chapter\",			\"displayName\" : \"Kapitelnummer\"		},{			\"key\" : \"headline\",			\"displayName\" : \"Überschrift\"		},{			\"key\" : \"parent\",			\"displayName\" : \"Parent Chapter\"		}]	}]}", "application/json");
+//            return Content("{	\"sources\" : [{		\"id\" : \"/devperts-qmhandbuch/sources/mysource\",		\"displayName\" : \"QM-Handbuch\",		\"categories\": [{			\"key\": \"qm-documents\", 			\"displayName\": \"QM Dokumente\"		}],		\"properties\" : [{			\"key\" : \"chapter\",			\"displayName\" : \"Kapitelnummer\"		},{			\"key\" : \"headline\",			\"displayName\" : \"Überschrift\"		},{			\"key\" : \"parent\",			\"displayName\" : \"Parent Chapter\"		}]	}]}", "application/json");
         }
 
         [HttpGet("chapter", Name = nameof(QualityManagementController) + "." + nameof(GetTopLevelElements))]
@@ -139,7 +139,7 @@ namespace Dvelop.Remote.Controller.QualityManagement
         }
     }
 
-    public class ChapterResultDto 
+    public class ChapterResultDto
     {
         public string ChapterNo { get; set; }
         public string Headline { get; set; }
@@ -157,7 +157,7 @@ namespace Dvelop.Remote.Controller.QualityManagement
     }
     public class SearchResultItemSourceProperty
     {
-        public bool  isMultiValue { get; set; }
+        public bool isMultiValue { get; set; }
         public string key { get; set; }
         public string value { get; set; }
     }

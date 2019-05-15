@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 //{			\"key\" : \"headline\",			\"displayName\" : \"Überschrift\"		},
 //{			\"key\" : \"parent\",			\"displayName\" : \"Parent Chapter\"		}]	}]}", "application/json");
 
-namespace Dvelop.Remote.Controller.QualityManagement
+namespace Dvelop.Remote.Controller.QualityManagement.Dto
 {
     public class SourcesList
     {
