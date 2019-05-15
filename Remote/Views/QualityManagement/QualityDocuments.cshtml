@@ -2,18 +2,119 @@
 @{
     Layout = "_Layout";
 }
-<div class="mdc-top-app-bar--fixed-adjust">
+
+<script>
+    function loadSubDocuments(parentNo) {
+        if ($('#chapterSub_' + parentNo).children().length != 0) {
+            // ausblenden
+            $('#load_' + parentNo).show();
+            $('#loaded_' + parentNo).hide();
+            $('#chapterSub_' + parentNo).empty();
+        } else {
+            $('#load_' + parentNo).hide();
+            $('#loading_' + parentNo).show();
+            $.ajax(window.location + parentNo).then((data) => {
+                $('#loading_' + parentNo).hide();
+                $('#loaded_' + parentNo).show();
+                $('#chapterSub_' + parentNo).empty();
+                $('#chapterSub_' + parentNo).append(data);
+            });
+        }
+    }
+
+    $(document).ready(() => {
+        dapi.addResourceEventListener('changed', (e) => {
+            // https://devperts-test2.d-velop.cloud/devperts-qmhandbuch/qm/read/?docId=AK00000003
+            if (e.uri.indexOf("/devperts-qmhandbuch/qm/read/?docId=") != -1){
+                let parts = e.uri.split("=");
+
+                let docId = parts[parts.length - 1];
+
+                $('#docid_' + docId).text("check");
+                $('#docid_' + docId).attr("style", "color:#2E7D32;");
+
+                let subDocumentLiElement = $('#docid_' + docId).parent().parent().next();
+
+                while (subDocumentLiElement && subDocumentLiElement.length !== 0) {
+                    if (subDocumentLiElement.find('.state-icon').length !== 0
+                        && subDocumentLiElement.find('.state-icon').text() === 'warning') {
+
+                        let linkToOpen = subDocumentLiElement.find('a').attr('href');
+                  
+                        //dapi.navigate(linkToOpen);
+                        subDocumentLiElement.find('a')[0].click();
+                        subDocumentLiElement.find('a')[0].focus();
+
+                        subDocumentLiElement = null;
+                    } else {
+                        subDocumentLiElement = subDocumentLiElement.next();
+                        console.log(subDocumentLiElement)
+                    }
+                }
+            }
+        });
+    });
+
+</script>
+<style>
+    .lds-dual-ring {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  margin-right: 32px;
+}
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 24px;
+  height: 24px;
+  margin: 1px;
+  border-radius: 50%;
+  border: 5px solid red;
+  border-color: red transparent red transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+@@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+</style>
+<header class="resource-header">
+    <h1>QM-Handbuch</h1>
+    <!-- style="font-size:20px;font-family:inherit;font-weight:300;line-height:1.25;color:inherit;margin:0.67em;box-sizing:border-box;" -->
+</header>
+<div class="">
+    <!-- mdc-top-app-bar--fixed-adjust -->
     <ul class="mdc-list mdc-list--two-line" aria-orientation="vertical">
         @foreach (var item in Model)
         {
         <li class="dmc-list-item">
-            <a href="@item.ChapterNo" target="dapi_navigate" class="mdc-list-item" tabindex="0">
-                <span class="mdc-list-item__graphic material-icons state-icon" aria-hidden="true"></span>
+            <!--
+            <a href="javascript:loadSubDocuments(@item.ChapterNo);" id="chapter_loader_@item.ChapterNo"
+               class="material-icons mdc-top-app-bar__action-item mdc-list-item"
+               aria-label="New vacation request" title="Unterdokumente laden">add</a>
+
+            <span class="mdc-list-item__text" id="chapter_@item.ChapterNo">
+                <span class="mdc-list-item__primary-text">@item.Headline</span>
+                <span class="mdc-list-item__secondary-text">@item.ChapterNo</span>
+            </span>
+
+            -->
+            <a href="javascript:loadSubDocuments(@item.ChapterNo);" id="chapter_@item.ChapterNo" class="mdc-list-item" tabindex="0">
+                <span class="mdc-list-item__graphic material-icons state-icon" style="display:none;" aria-hidden="true" id="loaded_@item.ChapterNo">remove</span>
+                <div class="lds-dual-ring" id="loading_@item.ChapterNo" style="display:none;"></div>
+                <span class="mdc-list-item__graphic material-icons state-icon" aria-hidden="true" id="load_@item.ChapterNo">add</span>
                 <span class="mdc-list-item__text">
-                    <span class="mdc-list-item__primary-text">@item.ChapterNo</span>
-                    <span class="mdc-list-item__secondary-text">@item.Headline</span>
+                    <span class="mdc-list-item__primary-text" style="font-size:18px !important;padding-top:10px !important;padding-bottom: 5px !important;">@item.Headline</span>
+                    <!--<span class="mdc-list-item__secondary-text">@item.ChapterNo</span>-->
                 </span>
             </a>
+            <span id="chapterSub_@item.ChapterNo"></span>
+
         </li>
         <li role="separator" class="mdc-list-divider mdc-list-divider--padded"></li>
         }

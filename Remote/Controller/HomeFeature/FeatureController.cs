@@ -39,12 +39,12 @@ namespace Dvelop.Remote.Controller.HomeFeature
             var feature = new FeatureDto
             {
                 Title = "QM-Handbuch",
-                SubTitle = "Super!!!",
-                Summary = "Noch besser!",
+                SubTitle = "DEVPERTS GmbH i. Gr.",
+                Summary = "Qualitätsmanagement",
                 Url = Url.RouteUrl(nameof(QualityManagementController) + "." +nameof(QualityManagementController.GetTopLevelElements)),
                 Color = "pumpkin",
                 Icon = "dv-tags",
-                Description = "Learn to be the best!"
+                Description = "Handbuch für Qualitätsmanagement"
             };
             return feature;
         }

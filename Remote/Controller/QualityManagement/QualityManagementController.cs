@@ -35,6 +35,36 @@ namespace Dvelop.Remote.Controller.QualityManagement
         }
 
         [AllowAnonymous]
+        [HttpGet("dmsextensions", Name = nameof(QualityManagementController) + "." + nameof(GetDmsExtension))]
+        public object GetDmsExtension()
+        {
+            DMSExtension result = new DMSExtension()
+            {
+                extensions = new List<DMSExtensionExtension>()
+                {
+                    new DMSExtensionExtension()
+                    {
+                        id = "blsdbfjkds",
+                        captions = new List<DMSExtensionCaption>()
+                        {
+                            new DMSExtensionCaption()
+                            {
+                                 culture = "de",
+                                  caption = "Gelesen und Verstanden"
+                            }
+                        },
+                        context = "DmsObjectDetailsContextAction",
+                        uriTemplate = "/devperts-qmhandbuch/qm/read/?docId={dmsobject.property_document_id}",
+                        iconUri = "/dms/Client/DMSObject/images/TransferDocument_64x64.png"
+                    }
+                }
+            };
+
+            string ret = JsonConvert.SerializeObject(result);
+            Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(ret, Formatting.Indented));
+            return Content(ret);
+        }
+        [AllowAnonymous]
         [HttpGet("dmssources", Name = nameof(QualityManagementController) + "." + nameof(GetDmsSources))]
         public object GetDmsSources()
         {
@@ -70,6 +100,14 @@ namespace Dvelop.Remote.Controller.QualityManagement
 //            return Content("{	\"sources\" : [{		\"id\" : \"/devperts-qmhandbuch/sources/mysource\",		\"displayName\" : \"QM-Handbuch\",		\"categories\": [{			\"key\": \"qm-documents\", 			\"displayName\": \"QM Dokumente\"		}],		\"properties\" : [{			\"key\" : \"chapter\",			\"displayName\" : \"Kapitelnummer\"		},{			\"key\" : \"headline\",			\"displayName\" : \"Überschrift\"		},{			\"key\" : \"parent\",			\"displayName\" : \"Parent Chapter\"		}]	}]}", "application/json");
         }
 
+        [HttpGet("read/", Name = nameof(QualityManagementController) + "." + nameof(DocumentRead))]
+        public async Task<object> DocumentRead([FromQuery] string docId)
+        {
+            return View("DocumentRead");
+        }
+
+
+
         [HttpGet("chapter", Name = nameof(QualityManagementController) + "." + nameof(GetTopLevelElements))]
         public async Task<object> GetTopLevelElements()
         {
@@ -96,8 +134,9 @@ namespace Dvelop.Remote.Controller.QualityManagement
             {
                 ChapterNo = x.sourceProperties.Single(y => y.key == "chapter").value,
                 Headline = x.sourceProperties.Single(y => y.key == "headline").value,
-                DocumentLink = x._links["self"].Href
-            }).ToList();
+                DocumentLink = x._links["self"].Href,
+                DocId = x.id
+            }).OrderBy(x => x.ChapterNo).ToList();
 
             return View("QualityDocuments", result);
             //return Content(_user.CurrentUser.DvBearer);
@@ -130,8 +169,9 @@ namespace Dvelop.Remote.Controller.QualityManagement
             {
                 ChapterNo = x.sourceProperties.Single(y => y.key == "chapter").value,
                 Headline = x.sourceProperties.Single(y => y.key == "headline").value,
-                DocumentLink = x._links["self"].Href
-            }).ToList();
+                DocumentLink = x._links["self"].Href,
+                DocId = x.id
+            }).OrderBy(x => x.ChapterNo).ToList();
 
             return View("SubQualityDocuments", result);
             //return Content(_user.CurrentUser.DvBearer);
@@ -144,6 +184,7 @@ namespace Dvelop.Remote.Controller.QualityManagement
         public string ChapterNo { get; set; }
         public string Headline { get; set; }
         public string DocumentLink { get; set; }
+        public string DocId { get; set; }
     }
 
     public class SearchReturnDto

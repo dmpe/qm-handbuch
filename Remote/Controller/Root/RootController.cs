@@ -41,6 +41,7 @@ namespace Dvelop.Remote.Controller.Root
                 Qualifier = version.Qualifier
             };
 
+            versionDto._links.Add("dmsobjectextensions", new RelationDataDto(Url.RouteUrl($"{nameof(QualityManagementController)}.{nameof(QualityManagementController.GetDmsExtension)}")));
             // Adding Features (HAL-LinkRelations)
             versionDto._links.Add("sources", new RelationDataDto(Url.RouteUrl($"{nameof(QualityManagementController)}.{nameof(QualityManagementController.GetDmsSources)}")));
             // Add Features to the ConfigApp (not available yet)
